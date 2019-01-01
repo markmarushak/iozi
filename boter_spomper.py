@@ -1,32 +1,36 @@
 import vk_api
-vk_session = vk_api.VkApi('markk.99@mail.ru', '12moroz12')
+vk_session = vk_api.VkApi('79056363387', 'TU3IIU')
 vk_session.auth()
 vk = vk_session.get_api()
 
+m_search = ['жизнь', 'знакомства', 'холостяк', 'прибыль', 'незнакомец', 'заработок']
+
 def addComment(post) :
     for id in post :
-        vk.wall.createComment(post_id=id, message='очень круто')
+        print(id.get(1))
+        """vk.wall.createComment(post_id=id, message='хочу пообщаться, мой телеграм всегда открыт для вас https://t.me/markmarushak')"""
 
 def postID(groups) :
-    id_post = {}
-    c = 0
-    
-    for grop in groups :
-        data = vk.wall.get(owner_id=-grop, count=5, offset=0)
+    id_post = []
+    for gr in groups :
+        data = vk.wall.get(owner_id=-gr, count=10, offset=0)
         for key in data['items'] :
-            print(key)
-        
-    print(id_post)             
-                               
-
+            id_post.append({0: key.get('owner_id'), 1: key.get('id')})
+    #bot.send_message(chat_id=update.message.chat_id, text=id_post)
+    print(id_post)
                           
 def searchGroupID(word) :
+    spm_gr = []
     id_group = []
-    search = vk.groups.search(q=word)
+    search = vk.groups.search(q=word, count=1000, offset=30)
     for key in search['items'] :
-        for name, data in key.items() :
-            if name == 'id' :
-                id_group.append(data)
+        if(key.get('is_closed') == 0) :
+            d_post = vk.wall.get(owner_id=-key.get('id'), count=1, offset=0)
+            if(d_post['items'][0].get('comments').get('count') > 0) :
+                #bot.send_message(chat_id=update.message.chat_id, text='https://vk.com/'+key.get('screen_name'))
+                id_group.append(key.get('id'))
     postID(id_group)
+            
     
-searchGroupID('жизнь')
+for s in m_search :
+    searchGroupID(s)
