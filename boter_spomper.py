@@ -27,12 +27,18 @@ def searchAddDb() :
         conn.close()
 
 
+
 cursor.execute(s_group)
 data = cursor.fetchall()
-
 for d in data :
     try:
-        postID(d[0])
+        postID(d)
     except:
-        print(len(id_post))
+        pass
+
+
+for comment in id_post :
+    try:
+        addComment(comment)
+    except:
         pass
